@@ -1,7 +1,6 @@
 ---
-slug: deck
+name: deck
 description: "Genera una presentazione in 4 step: brief, draft contenuto, scelta formato (HTML/PDF/DOCX/PPTX), delega alla skill di output specifica per il formato. Skill orchestratrice."
-is_core: true
 ---
 # Deck — presentation orchestrator (4-stage)
 
