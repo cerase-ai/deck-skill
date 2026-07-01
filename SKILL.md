@@ -13,8 +13,13 @@ Ask the user, one question at a time:
 2. **Objective**: what should the audience think or do after reading?
 3. **Roughly how many slides + orientation?** (e.g. 10 slides 16:9)
 4. **Content**: paste or describe the source material (bullet points, doc URL, free text).
+5. **Brand (optional)**: should the deck follow a visual brand? Capture whatever the user offers — a primary/accent colour, a background/text colour, a heading/body font, or a ready-made CSS snippet they already have. If they have none, skip it: the deck renders on the default theme.
 
-When all 4 answered, write `presentation-brief.md` in the workspace with the structured fields. Confirm with the user before moving on.
+When answered, write `presentation-brief.md` in the workspace with the structured fields, including a **Brand** field:
+- record the brand colours / fonts exactly as given, or the raw CSS verbatim if the user pasted one;
+- write `Brand: default` when the user wants no brand override.
+
+Confirm with the user before moving on.
 
 ## Stage 2 — content draft (format-agnostic markdown)
 
@@ -49,9 +54,17 @@ Pick **one** primary format. Offer to render a second format afterwards if the u
 
 ### Path A — HTML / PDF (fast, native to Cerase)
 
-Read `presentation.md`. Call:
+Read `presentation.md` (the deck) and the **Brand** field from `presentation-brief.md`.
 
-`call_recipe("cerase-deck-renderer.render", {markdown_content: <full file contents>, output_filename: "presentation.pdf"})`
+**Brand → `template_css`.** When the brief carries a brand override, turn it into a small CSS snippet and pass it as `template_css`. It is applied on top of the default md2 theme (appended after the default template's own CSS, so your rules win):
+- raw CSS pasted by the user → pass it verbatim;
+- brand colours / fonts → derive a *minimal* override, e.g. the brand colour on headings + accents and the brand font on the deck. Keep it to the few brand tokens the user actually gave — don't invent a full theme.
+
+When `Brand: default` (no override), omit `template_css` entirely — the deck renders on the default theme.
+
+Call (include the `template_css` argument only when there is a brand override):
+
+`call_recipe("cerase-deck-renderer.render", {markdown_content: <full file contents>, output_filename: "presentation.pdf", template_css: <brand CSS>})`
 
 (or `output_filename: "presentation.html"` for HTML responsive).
 
