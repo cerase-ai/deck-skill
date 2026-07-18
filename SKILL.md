@@ -30,6 +30,14 @@ Read `presentation-brief.md` from the workspace. Produce `presentation.md`, form
 - Slide title: `## <title>`
 - Slide bodies: ≤ 7 bullets max, parallel structure, concrete numbers over adjectives
 - No HTML, no inline scripts, no remote images (slide tools render them inconsistently)
+- **Chapter cover (optional — long, multi-part decks):** to open a major section/act, wrap a whole slide in a `:::chapter` fence — a `# ` H1 chapter title + optional subtitle line(s) — for a full-height act divider. One per major act (a 3-4 act deck gets 3-4); it's an act break, not a per-topic transition. Example:
+  ```
+  :::chapter
+  # Parte 1 — Il problema
+  una riga di sottotitolo, opzionale
+  :::
+  ```
+  Rendered only by the HTML/PDF path (cerase-deck-renderer / md2 ≥ 0.2.1); other output formats ignore the fence.
 
 Show the user the slide titles + 1-line outline. Wait for green light or revisions.
 
