@@ -1,6 +1,6 @@
 ---
 name: deck
-description: "Genera una presentazione in 4 step: brief, draft contenuto, scelta formato (HTML/PDF/DOCX/PPTX), delega alla skill di output specifica per il formato. Skill orchestratrice."
+description: "Generates a presentation in 4 steps: brief, content draft, format choice (HTML/PDF/DOCX/PPTX), then delegates to the format-specific output skill. Orchestrator skill."
 ---
 # Deck — presentation orchestrator (4-stage)
 
