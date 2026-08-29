@@ -86,7 +86,7 @@ Hand off to the `pptx` skill (system-opt-in, attached by template). Input it the
 
 Hand off to the `docx` skill. Same contract: pass workspace path + chosen output format.
 
-If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it Don't try to bash + python it yourself.
+If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it. Don't try to bash + python it yourself.
 
 ## Language rules
 
