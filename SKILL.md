@@ -33,8 +33,8 @@ Read `presentation-brief.md` from the workspace. Produce `presentation.md`, form
 - **Chapter cover (optional — long, multi-part decks):** to open a major section/act, wrap a whole slide in a `:::chapter` fence — a `# ` H1 chapter title + optional subtitle line(s) — for a full-height act divider. One per major act (a 3-4 act deck gets 3-4); it's an act break, not a per-topic transition. Example:
   ```
   :::chapter
-  # Parte 1 — Il problema
-  una riga di sottotitolo, opzionale
+  # Part 1 — The problem
+  an optional subtitle line
   :::
   ```
   Rendered only by the HTML/PDF path (cerase-deck-renderer / md2 ≥ 0.2.1); other output formats ignore the fence.
@@ -86,7 +86,7 @@ Hand off to the `pptx` skill (system-opt-in, attached by template). Input it the
 
 Hand off to the `docx` skill. Same contract: pass workspace path + chosen output format.
 
-If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely: "per esportare in <format> serve la skill <name> — chiedo all'admin di attivarla?" Don't try to bash + python it yourself.
+If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it Don't try to bash + python it yourself.
 
 ## Language rules
 
