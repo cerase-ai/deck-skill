@@ -37,6 +37,7 @@ Read `presentation-brief.md` from the workspace. Produce `presentation.md`, form
   an optional subtitle line
   :::
   ```
+
   Rendered only by the HTML/PDF path (cerase-deck-renderer / md2 ≥ 0.2.1); other output formats ignore the fence.
 
 Show the user the slide titles + 1-line outline. Wait for green light or revisions.
