@@ -27,8 +27,10 @@ asks for a presentation, slides or a deck.
    - When the needed skill is not attached to the assistant, says that an
      administrator has to enable it, instead of producing the file another way.
 
-The renderer always produces a PDF, so asking it for `presentation.html`
-returns PDF content under that name.
+The renderer writes the deck to `outputs/` in the workspace and returns its
+path, and the assistant attaches it with `[[attach: <path>]]`. An
+`output_filename` ending in `.html` returns the HTML deck, one file that opens
+in any browser; any other name returns the PDF.
 
 Chat and documents follow the person's language; file names are the title as a
 slug plus the extension, for example `q3-results-presentation.pdf`.

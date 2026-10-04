@@ -54,7 +54,7 @@ Options:
 | **PDF** | email attachment, print, archive | `.pdf` | cerase-deck-renderer MCP (HTML→PDF) |
 | **DOCX** | editable Word, partner team has only MS Office | `.docx` | `pptx` skill or `docx` skill (depends on prefer slides vs document) |
 | **PPTX** | real PowerPoint slides, edited by humans | `.pptx` | `pptx` skill |
-| **ODP** | LibreOffice / open ecosystem | `.odp` | `pptx` skill (uses odfpy backend) |
+| **ODP** | LibreOffice / open ecosystem | `.odp` | `pptx` skill |
 | **Google Slides** | tenant uses Google Workspace, wants collaborative editing | gdrive link | `pptx` skill + google-workspace MCP |
 
 Pick **one** primary format. Offer to render a second format afterwards if the user wants a backup copy.
@@ -75,9 +75,9 @@ Call (include the `template_css` argument only when there is a brand override):
 
 `call_recipe("cerase-deck-renderer.render", {markdown_content: <full file contents>, output_filename: "presentation.pdf", template_css: <brand CSS>})`
 
-(or `output_filename: "presentation.html"` for HTML responsive).
+(or `output_filename: "presentation.html"` for HTML responsive: a name ending in `.html` returns the HTML deck, one file that opens in any browser).
 
-The recipe returns `{filename, size_bytes, contents_base64}`. Decode the base64 and write to the workspace. Attach to the reply.
+The recipe answers `{path, filename, size_bytes, format}`: the deck is already in your workspace at `path`, which is `outputs/presentation.pdf`. Attach it with `[[attach: <path>]]`; never paste its content in the chat.
 
 ### Path B — PPTX / ODP / Google Slides
 
@@ -87,7 +87,7 @@ Hand off to the `pptx` skill (system-opt-in, attached by template). Input it the
 
 Hand off to the `docx` skill. Same contract: pass workspace path + chosen output format.
 
-If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it. Don't try to bash + python it yourself.
+If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it. Don't try to build the file with bash yourself.
 
 ## Language rules
 
