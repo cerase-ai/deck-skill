@@ -6,4 +6,4 @@
 # of the bundle that ships to the agent.
 it:
   display_name: "Deck"
-  description: "Genera una presentazione in 4 step: brief, draft contenuto, scelta formato (HTML/PDF/DOCX/PPTX), delega alla skill di output specifica per il formato. Skill orchestratrice."
+  description: "Costruisce una presentazione in cinque passi: un brief, una bozza, un primo render, una revisione del deck stampato su otto controlli, e il render finale. La consegna in HTML o PDF, oppure tramite le skill pptx o docx come PowerPoint, OpenDocument, Google Slides o Word. Da usare quando la persona chiede una presentazione, delle slide, un deck o un pitch."

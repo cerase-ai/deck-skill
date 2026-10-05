@@ -1,96 +1,72 @@
 ---
 name: deck
-description: "Generates a presentation in 4 steps: brief, content draft, format choice (HTML/PDF/DOCX/PPTX), then delegates to the format-specific output skill. Orchestrator skill."
+description: "Builds a presentation in five steps: a brief, a draft, a first render, a revision of the printed deck against eight checks, and the final render. Delivers it as HTML or PDF, or through the pptx or docx skill as PowerPoint, OpenDocument, Google Slides or Word. Use when the person asks for a presentation, slides, a deck or a pitch."
 ---
-# Deck — presentation orchestrator (4-stage)
+# Deck — a presentation in five steps
 
-When the user asks for a "presentation", "slides", "deck", "presentazione", "slide" — go through four stages in order. This skill is the **orchestrator**: stages 1-2 are content discovery, stage 3 chooses the output format, stage 4 delegates the actual rendering to a format-specific skill (or to the cerase-deck-renderer MCP for the fast HTML/PDF path).
+Each step writes a file in the workspace that the next one reads. Go through them in order, and tell the person in one line which step you are on.
 
-## Stage 1 — brief (interview)
-
-Ask the user, one question at a time:
-1. **Audience**: who will read this? (board / sales prospect / team / customer)
-2. **Objective**: what should the audience think or do after reading?
-3. **Roughly how many slides + orientation?** (e.g. 10 slides 16:9)
-4. **Content**: paste or describe the source material (bullet points, doc URL, free text).
-5. **Brand (optional)**: should the deck follow a visual brand? Capture whatever the user offers — a primary/accent colour, a background/text colour, a heading/body font, or a ready-made CSS snippet they already have. If they have none, skip it: the deck renders on the default theme.
-
-When answered, write `presentation-brief.md` in the workspace with the structured fields, including a **Brand** field:
-- record the brand colours / fonts exactly as given, or the raw CSS verbatim if the user pasted one;
-- write `Brand: default` when the user wants no brand override.
-
-Confirm with the user before moving on.
-
-## Stage 2 — content draft (format-agnostic markdown)
-
-Read `presentation-brief.md` from the workspace. Produce `presentation.md`, format-agnostic:
-
-- Cover: `# <title>` + 1-line subtitle
-- Slides separated by `---` on its own line (blank lines above and below)
-- Slide title: `## <title>`
-- Slide bodies: ≤ 7 bullets max, parallel structure, concrete numbers over adjectives
-- No HTML, no inline scripts, no remote images (slide tools render them inconsistently)
-- **Chapter cover (optional — long, multi-part decks):** to open a major section/act, wrap a whole slide in a `:::chapter` fence — a `# ` H1 chapter title + optional subtitle line(s) — for a full-height act divider. One per major act (a 3-4 act deck gets 3-4); it's an act break, not a per-topic transition. Example:
-  ```
-  :::chapter
-  # Part 1 — The problem
-  an optional subtitle line
-  :::
-  ```
-
-  Rendered only by the HTML/PDF path (cerase-deck-renderer / md2 ≥ 0.2.1); other output formats ignore the fence.
-
-Show the user the slide titles + 1-line outline. Wait for green light or revisions.
-
-## Stage 3 — format chooser
-
-Ask the user explicitly which output they need. Don't assume.
-
-Options:
-
-| Format | When to pick | Output extension | Backend |
+| Step | Read first | Reads | Writes |
 |---|---|---|---|
-| **HTML responsive** | shared via link, browser, mobile-friendly | `.html` | cerase-deck-renderer MCP |
-| **PDF** | email attachment, print, archive | `.pdf` | cerase-deck-renderer MCP (HTML→PDF) |
-| **DOCX** | editable Word, partner team has only MS Office | `.docx` | `pptx` skill or `docx` skill (depends on prefer slides vs document) |
-| **PPTX** | real PowerPoint slides, edited by humans | `.pptx` | `pptx` skill |
-| **ODP** | LibreOffice / open ecosystem | `.odp` | `pptx` skill |
-| **Google Slides** | tenant uses Google Workspace, wants collaborative editing | gdrive link | `pptx` skill + google-workspace MCP |
+| 1. Brief | `brief.md` | the interview | `presentation-brief.md` |
+| 2. Draft | `draft.md` | `presentation-brief.md` | `presentation.md` |
+| 3. Format and first render | this file | `presentation.md` | `outputs/presentation.pdf` |
+| 4. Revision | `revise.md` | the rendered PDF, `presentation.md`, the brief's Audience block | `presentation-revision.md`, and `presentation.md` corrected |
+| 5. Final render | this file | `presentation.md` | the file in the format the person chose |
 
-Pick **one** primary format. Offer to render a second format afterwards if the user wants a backup copy.
+`brief.md`, `draft.md` and `revise.md` sit next to this file. Read each one when its step starts, not before. `draft.md` names four more files — `slide-patterns.md`, `copy-rules.md`, `md2-syntax.md`, `print-constraints.md` — and they are read only while drafting.
 
-## Stage 4 — delegate to the right backend
+When a step's input file is missing, do not invent it: offer to run the step before, or ask the person to paste the content.
 
-### Path A — HTML / PDF (fast, native to Cerase)
+**A deck is not delivered before step 4 has run.** The author of a deck reads back into each line what they meant, so a deck checked only by its author still carries the lines its reader cannot parse. `revise.md` says why and how.
 
-Read `presentation.md` (the deck) and the **Brand** field from `presentation-brief.md`.
+## Step 3 — format, then the first render
 
-**Brand → `template_css`.** When the brief carries a brand override, turn it into a small CSS snippet and pass it as `template_css`. It is applied on top of the default md2 theme (appended after the default template's own CSS, so your rules win):
-- raw CSS pasted by the user → pass it verbatim;
-- brand colours / fonts → derive a *minimal* override, e.g. the brand colour on headings + accents and the brand font on the deck. Keep it to the few brand tokens the user actually gave — don't invent a full theme.
+Ask which format the person needs, and do not assume one:
 
-When `Brand: default` (no override), omit `template_css` entirely — the deck renders on the default theme.
+| Format | When | Extension | Made by |
+|---|---|---|---|
+| **HTML** | shared by link, read in a browser or on a phone | `.html` | the deck renderer |
+| **PDF** | attached to a mail, printed, archived | `.pdf` | the deck renderer |
+| **PPTX** | real PowerPoint slides that people will edit | `.pptx` | the `pptx` skill |
+| **ODP** | LibreOffice | `.odp` | the `pptx` skill |
+| **Google Slides** | the organisation works in Google Workspace and wants to edit together | a Drive link | the `pptx` skill |
+| **DOCX** | the person wants a document rather than slides | `.docx` | the `docx` skill |
 
-Call (include the `template_css` argument only when there is a brand override):
+Whatever the format, the first render is a PDF: the revision reads the deck as it prints.
 
-`call_recipe("cerase-deck-renderer.render", {markdown_content: <full file contents>, output_filename: "presentation.pdf", template_css: <brand CSS>})`
+```
+call_recipe("cerase-deck-renderer.render", {"markdown_content": "<the whole of presentation.md>", "output_filename": "presentation.pdf", "orientation": "landscape", "paper": "A4"})
+```
 
-(or `output_filename: "presentation.html"` for HTML responsive: a name ending in `.html` returns the HTML deck, one file that opens in any browser).
+`orientation` and `paper` come from the brief's Format section. It answers `{path, filename, size_bytes, format, pages}`: the PDF is in your workspace at `path`, and `pages` is how many pages it printed. A deck prints one page for the cover and one per slide, so count the lines that hold only `---` in `presentation.md`, add one, and compare: more pages than that means a slide ran onto a second page, which step 4 fixes.
 
-The recipe answers `{path, filename, size_bytes, format}`: the deck is already in your workspace at `path`, which is `outputs/presentation.pdf`. Attach it with `[[attach: <path>]]`; never paste its content in the chat.
+When the renderer refuses the markdown, its message names the problem; fix the block it names, using `md2-syntax.md`, and render again, at most twice. After two failures, show the person the message and ask which block to drop.
 
-### Path B — PPTX / ODP / Google Slides
+### Brand
 
-Hand off to the `pptx` skill (system-opt-in, attached by template). Input it the `presentation.md` workspace path + the chosen output format. The `pptx` skill produces the artefact and writes it back to the workspace.
+When the brief records brand colours, fonts or CSS, turn them into a short CSS snippet and add `"template_css": "<css>"` to every render call. It is applied on top of the default theme, so your rules win:
+- CSS the person pasted: pass it as it is;
+- colours or fonts: write a minimal override, such as the brand colour on headings and the brand font on the deck, with only the values the person gave.
 
-### Path C — DOCX (when the user actually wants a document, not slides)
+When the brief says `Brand: default`, leave `template_css` out. A palette name (`palette = "cool"`) goes in the deck's frontmatter instead, as `md2-syntax.md` shows.
 
-Hand off to the `docx` skill. Same contract: pass workspace path + chosen output format.
+## Step 5 — the final render
 
-If the corresponding format-specific skill is not attached to your Agent template (admin didn't opt in), tell the user politely, in their language, that exporting to <format> needs the <name> skill, and offer to ask the admin to enable it. Don't try to build the file with bash yourself.
+After the revision has corrected `presentation.md`:
 
-## Language rules
+- **HTML**: `call_recipe("cerase-deck-renderer.render", {"markdown_content": "<presentation.md>", "output_filename": "<slug>.html", "orientation": "landscape", "paper": "A4"})` returns the HTML deck, one file that opens in any browser.
+- **PDF**: the same call with `"output_filename": "<slug>.pdf"`. Compare `pages` with the slide count again.
+- **PPTX, ODP, Google Slides**: hand over to the `pptx` skill with the path `presentation.md` and the format.
+- **DOCX**: hand over to the `docx` skill with the path `presentation.md` and the format.
 
-- Chat: in the user's language.
-- Brief + draft artefacts: in the user's language.
-- File names: use the title slug + extension, e.g. `q3-results-presentation.pdf`.
+If the skill a format needs is not among your skills, say in the person's language that this format needs that skill, which the organisation's admin enables, and offer HTML or PDF. Do not build the file with bash yourself.
+
+Deliver with `[[attach: <path>]]`. Never paste a file's content or any base64 in the chat. The file name is the deck's title as a slug, such as `q3-results-northwind.pdf`.
+
+These are the renderer calls this skill makes. Do not invent others.
+
+## Language
+
+- Chat: the person's language, always.
+- Brief, deck and revision: the deck's language, which the brief records; by default the person's language.
