@@ -37,7 +37,7 @@ presentation, slides, a deck or a pitch.
    `presentation.md`; without a sub-agent the assistant runs the checks itself
    and says so. The assistant reports every finding to the person.
 5. **Final render.** HTML or PDF through the renderer; PPTX, ODP and Google
-   Slides through the `pptx` skill; DOCX through the `docx` skill.
+   Slides through the `presentations` skill; DOCX through the `documents` skill.
 
 The renderer writes the deck to `outputs/` in the workspace and returns its
 path, and the assistant attaches it with `[[attach: <path>]]`. Chat follows
@@ -48,7 +48,7 @@ language, by default the person's.
 
 - The `cerase-deck-renderer` connector for HTML and PDF.
 - The `cerase-docreader` connector, which the revision uses to read the PDF.
-- The `pptx` and `docx` skills for the other formats.
+- The `presentations` and `documents` skills for the other formats.
 
 ## Files
 

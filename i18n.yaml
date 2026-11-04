@@ -6,4 +6,4 @@
 # of the bundle that ships to the agent.
 it:
   display_name: "Deck"
-  description: "Costruisce una presentazione in cinque passi: un brief, una bozza, un primo render, una revisione del deck stampato su otto controlli, e il render finale. La consegna in HTML o PDF, oppure tramite le skill pptx o docx come PowerPoint, OpenDocument, Google Slides o Word. Da usare quando la persona chiede una presentazione, delle slide, un deck o un pitch."
+  description: "Costruisce una presentazione in cinque passi: un brief, una bozza, un primo render, una revisione del deck stampato su otto controlli, e il render finale. La consegna in HTML o PDF, oppure tramite le skill presentations o documents come PowerPoint, OpenDocument, Google Slides o Word. Da usare quando la persona chiede una presentazione, delle slide, un deck o un pitch."

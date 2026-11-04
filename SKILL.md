@@ -1,6 +1,6 @@
 ---
 name: deck
-description: "Builds a presentation in five steps: a brief, a draft, a first render, a revision of the printed deck against eight checks, and the final render. Delivers it as HTML or PDF, or through the pptx or docx skill as PowerPoint, OpenDocument, Google Slides or Word. Use when the person asks for a presentation, slides, a deck or a pitch."
+description: "Builds a presentation in five steps: a brief, a draft, a first render, a revision of the printed deck against eight checks, and the final render. Delivers it as HTML or PDF, or through the presentations or documents skill as PowerPoint, OpenDocument, Google Slides or Word. Use when the person asks for a presentation, slides, a deck or a pitch."
 ---
 # Deck — a presentation in five steps
 
@@ -28,10 +28,10 @@ Ask which format the person needs, and do not assume one:
 |---|---|---|---|
 | **HTML** | shared by link, read in a browser or on a phone | `.html` | the deck renderer |
 | **PDF** | attached to a mail, printed, archived | `.pdf` | the deck renderer |
-| **PPTX** | real PowerPoint slides that people will edit | `.pptx` | the `pptx` skill |
-| **ODP** | LibreOffice | `.odp` | the `pptx` skill |
-| **Google Slides** | the organisation works in Google Workspace and wants to edit together | a Drive link | the `pptx` skill |
-| **DOCX** | the person wants a document rather than slides | `.docx` | the `docx` skill |
+| **PPTX** | real PowerPoint slides that people will edit | `.pptx` | the `presentations` skill |
+| **ODP** | LibreOffice | `.odp` | the `presentations` skill |
+| **Google Slides** | the organisation works in Google Workspace and wants to edit together | a Drive link | the `presentations` skill |
+| **DOCX** | the person wants a document rather than slides | `.docx` | the `documents` skill |
 
 Whatever the format, the first render is a PDF: the revision reads the deck as it prints.
 
@@ -57,8 +57,8 @@ After the revision has corrected `presentation.md`:
 
 - **HTML**: `call_recipe("cerase-deck-renderer.render", {"markdown_content": "<presentation.md>", "output_filename": "<slug>.html", "orientation": "landscape", "paper": "A4"})` returns the HTML deck, one file that opens in any browser.
 - **PDF**: the same call with `"output_filename": "<slug>.pdf"`. Compare `pages` with the slide count again.
-- **PPTX, ODP, Google Slides**: hand over to the `pptx` skill with the path `presentation.md` and the format.
-- **DOCX**: hand over to the `docx` skill with the path `presentation.md` and the format.
+- **PPTX, ODP, Google Slides**: hand over to the `presentations` skill with the path `presentation.md` and the format.
+- **DOCX**: hand over to the `documents` skill with the path `presentation.md` and the format.
 
 If the skill a format needs is not among your skills, say in the person's language that this format needs that skill, which the organisation's admin enables, and offer HTML or PDF. Do not build the file with bash yourself.
 
